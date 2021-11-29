@@ -7,13 +7,27 @@ import {
   Form
 } from 'react-bootstrap';
 
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 
-import useMidiDeviceList from './hooks/MidiDevice';
+import DeviceTypes from './DeviceTypes';
+import { MidiDeviceContext } from './context/MidiDevices';
 
-function DeviceAddForm(props) {
+import KemperEffects from './KemperEffects';
+import ArchetypeEffects from './ArchetypeEffects';
 
-  const addDevice = props.addDevice;
+// attach a list of effects to a device based on its type
+const getEffectsForDevice = (midiOutput, midiChannel, deviceType) => {
+  if(deviceType === 'kemper') {
+    return KemperEffects(midiOutput, midiChannel);
+  } else if(deviceType === 'neural-henson') {
+    return ArchetypeEffects(midiOutput, midiChannel);
+  } else {
+    // TODO
+    return [];
+  }
+};
+
+function DeviceAddForm() {
 
   const initialState = {
     alias: 'My Example Device',
@@ -24,7 +38,25 @@ function DeviceAddForm(props) {
 
   const [ formValues, setValues ] = useState(initialState);
 
-  const connectedMidiDevices = useMidiDeviceList();
+  const {
+    devices,
+    setDevices,
+    midiOutputs
+  } = useContext(MidiDeviceContext);
+
+  const addDevice = (device) => {
+    if (devices.some((d) => d.key === device.key)) {
+      // TODO - some validation error msg because it's already been added
+    } else {
+      setDevices([
+        ...devices,
+        {
+          ...device,
+          effects: getEffectsForDevice(device.output, device.midiChannel, device.type)
+        }
+      ]);
+    }
+  };
 
   return (
     <Container>
@@ -60,9 +92,17 @@ function DeviceAddForm(props) {
                   }}
                   aria-label="Device Type">
                   <option value=""></option>
-                  <option value="kemper">Kemper Profiler (all models)</option>
-                  <option value="qc">Neural DSP Quad Cortex</option>
-                  <option value="gr55">Roland GR-55</option>
+                  {
+                    Object.entries(DeviceTypes).map(([ deviceId, deviceName ]) => {
+                      return <option
+                        key={deviceId}
+                        value={deviceId}
+                        >
+                          {deviceName}
+                        </option>
+                        
+                    })
+                  }
                 </Form.Select>
               </FloatingLabel>
             </Col>
@@ -79,7 +119,7 @@ function DeviceAddForm(props) {
                   aria-label="MIDI Device">
                 <option value=""></option>
                   {
-                    connectedMidiDevices.map((device) => (
+                    midiOutputs.map((device) => (
                       <option key={device.id} value={device.id}>{device.name} ({device.id})</option>
                     ))
                   }
@@ -110,10 +150,13 @@ function DeviceAddForm(props) {
           <Row> 
               <Button
                 onClick={() => {
-                  console.log(formValues);
                   addDevice({
-                    ...formValues,
-                    id: [formValues.midiDevice, '-', formValues.midiChannel].join()
+                    key: [formValues.midiDevice, '-', formValues.midiChannel].join(''),
+                    id: [formValues.midiDevice, '-', formValues.midiChannel].join(''),
+                    alias: formValues.alias,
+                    channel: formValues.midiChannel,
+                    type: formValues.type,                    
+                    output: midiOutputs.find((output) => output.id === formValues.midiDevice)
                   });
                 }}
                 variant="primary">

@@ -6,14 +6,26 @@ import {
   Table
 } from 'react-bootstrap';
 
-function DeviceList(props) {
+import { useContext } from 'react';
+import DeviceTypes from './DeviceTypes';
+import { MidiDeviceContext } from './context/MidiDevices';
 
-  const { removeDevice } = props;
+function DeviceList() {
+
+  const {
+    devices,
+    setDevices
+  } = useContext(MidiDeviceContext);
+
+  const removeDevice = (id) => {
+    setDevices(devices.filter(device => device.id !== id));
+  }
+
   return (
     <Container fluid>
       <Row>
         <Col>
-          <Table striped bordered hove variant="light">
+          <Table striped bordered variant="light">
             <thead>
               <tr>
                 <th>Alias</th>
@@ -24,11 +36,11 @@ function DeviceList(props) {
             </thead>
             <tbody>
             {
-              props.devices.map((device) => {
-                  return <tr key="{device.id}">
+              devices.map((device) => {
+                  return <tr key={device.key}>
                     <td>{device.alias}</td>
-                    <td>{device.midiDevice}</td>
-                    <td>{device.type}</td>
+                    <td>{device.id}</td>
+                    <td>{DeviceTypes[device.type]}</td>
                     <td>
                       <Button variant="danger" onClick={() => {
                         removeDevice(device.id);
@@ -42,7 +54,7 @@ function DeviceList(props) {
             }
             </tbody>
           </Table>
-          { props.devices.length === 0 ? <h2>Add a new MIDI device to get started!</h2> : null }
+          { devices.length === 0 ? <h2>Add a new MIDI device to get started!</h2> : null }
         </Col>
       </Row>
     </Container>

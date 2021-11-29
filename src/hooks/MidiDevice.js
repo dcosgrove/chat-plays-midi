@@ -10,10 +10,11 @@ function useMidiDeviceList() {
         console.error('Unable to enable WebMIDI', err);
         setDevices([]);
       } else {
+        console.log('devices', webmidi.outputs);
         setDevices(webmidi.outputs);
       }
     });
-  });
+  }, []);
 
   return devices;
 }

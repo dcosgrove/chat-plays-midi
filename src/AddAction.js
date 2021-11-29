@@ -6,7 +6,7 @@ function AddAction(props) {
       <Row>
         <Col>
           <h1>Connections</h1>
-          <Table striped bordered hove variant="dark">
+          <Table striped bordered variant="dark">
             <thead>
               <tr>
                 <th>Name</th>
