@@ -21,6 +21,8 @@ const getEffectsForDevice = (midiOutput, midiChannel, deviceType) => {
     return KemperEffects(midiOutput, midiChannel);
   } else if(deviceType === 'neural-henson') {
     return ArchetypeEffects(midiOutput, midiChannel);
+  } else if(deviceType === 'neural-gojira') {
+    return ArchetypeEffects(midiOutput, midiChannel);
   } else {
     // TODO
     return [];
