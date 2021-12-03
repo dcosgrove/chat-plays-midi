@@ -7,9 +7,6 @@ import {
 
 import { AuthContext } from './context/Auth';
 
-const REDIRECT_URL = process.env.PUBLIC_URL === '' ?
-    'http://localhost:3000/authorize' : `${process.env.PUBLIC_URL}/authorize`;
-
 function LoginGate(props) {
     const {
       clientId,
@@ -18,6 +15,8 @@ function LoginGate(props) {
     
     const loggedIn = token !== '';
     
+    const REDIRECT_URL = `${window.location.protocol}//${window.location.host}${window.location.pathname}authorize`
+
     return loggedIn ? props.children : 
       <Card>
         <Card.Body>
