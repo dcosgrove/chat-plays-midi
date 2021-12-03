@@ -1,11 +1,14 @@
 {
   "name": "lets-play-midi",
+  "homepage": "https://www.dcosgrove.com/chat-plays-midi",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.15.0",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
+    "@twurple/auth": "^5.0.10",
+    "@twurple/pubsub": "^5.0.10",
     "axios": "^0.24.0",
     "bootstrap": "^5.1.3",
     "react": "^17.0.2",
@@ -15,9 +18,6 @@
     "react-router": "^6.0.2",
     "react-router-dom": "^6.0.2",
     "react-scripts": "4.0.3",
-    "twitch": "^4.6.7",
-    "twitch-auth": "^4.6.7",
-    "twitch-pubsub-client": "^4.6.7",
     "web-vitals": "^1.1.2",
     "webmidi": "^2.5.3"
   },

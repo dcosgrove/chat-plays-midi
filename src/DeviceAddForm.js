@@ -12,8 +12,8 @@ import { useState, useContext } from 'react';
 import DeviceTypes from './DeviceTypes';
 import { MidiDeviceContext } from './context/MidiDevices';
 
-import KemperEffects from './KemperEffects';
-import ArchetypeEffects from './ArchetypeEffects';
+import KemperEffects from './effects/KemperEffects';
+import ArchetypeEffects from './effects/ArchetypeEffects';
 
 // attach a list of effects to a device based on its type
 const getEffectsForDevice = (midiOutput, midiChannel, deviceType) => {

@@ -1,46 +1,43 @@
 import {
-  useContext,
   useState,
   useEffect
 } from 'react';
 
-import { ApiClient } from 'twitch';
-import { StaticAuthProvider } from 'twitch-auth';
-import { PubSubClient } from 'twitch-pubsub-client';
-import { AuthContext } from '../context/Auth';
+import { StaticAuthProvider } from '@twurple/auth';
+import { SingleUserPubSubClient } from '@twurple/pubsub';
 
-function useTwitchPubSubClient() {
-  const [listener, setListener] = useState(null);
-
-  const {
-    clientId,
-    token
-  } = useContext(AuthContext);
+function useTwitchPubSubClient(clientId, token, onChannelPointRedemption) {
+  const [ client,  setClient ] = useState(null);
 
   useEffect(() => {
-    const authProvider = new StaticAuthProvider(clientId, token);
-    const apiClient = new ApiClient({ authProvider });
-    const pubSubClient = new PubSubClient();
+    console.log('running effect in TwitchPubSubClient');
+    if(!client && token !== '') {
+      console.log('setting up pubsub client...');
+      const authProvider = new StaticAuthProvider(clientId, token);
+      console.log('auth provider', authProvider);
+      
+      const pubSubClient = new SingleUserPubSubClient({
+        authProvider: authProvider
+      });
 
-    // (async () => {
-    //   const userId = await pubSubClient.registerUserListener(apiClient);
+      pubSubClient.onRedemption((message) => {
+        // console.log('raw message', message);
+        const { id, userDisplayName, rewardTitle, redemptionDate } = message;
+        onChannelPointRedemption({ id, userDisplayName, rewardTitle, redemptionDate });
+      }, (err) => {
+        console.log('listening error', err);
+      });
 
-    //   console.log('connecting listener...');
-    //   const listener = await pubSubClient.onModAction(userId, '7864803', (msg) => {
-    //     console.log(msg);
-    //   });
+      setClient(pubSubClient);
 
-    //   console.log('connected!');
-    //   setListener(listener);
-    // })()
+    }
 
     return () => {
-      console.log('disconnecting listener..')
-      // listener.remove();
+      console.log('pubsub effect teardown');
     }
-  });
+  }, [client, clientId, onChannelPointRedemption, token]);
 
-  return listener;
+  return client;
 }
 
 export default useTwitchPubSubClient;

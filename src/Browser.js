@@ -4,25 +4,27 @@ import { Tabs, Tab } from 'react-bootstrap';
 import DeviceList from './DeviceList';
 import DeviceAddForm from './DeviceAddForm';
 import MidiEffectList from './MidiEffectList';
-import TwitchEvents from './TwitchEvents';
+import TwitchEventsLog from './TwitchEventsLog';
 import MidiDeviceProvider from './context/MidiDevices';
+import TriggersList from './TriggersList';
 
 function Browser() {
   return (
     <MidiDeviceProvider>
-      <Tabs defaultActiveKey="profile" id="uncontrolled-tab-example" className="mb-3">
+      <Tabs defaultActiveKey="browser" id="browser" className="mb-3">
         <Tab eventKey="triggers" title="Triggers">
-          Triggers
-          <TwitchEvents></TwitchEvents>
+          <TriggersList />
         </Tab>
-        <Tab eventKey="twitchActions" title="Twitch Actions">
+        <Tab eventKey="previewEffects" title="Preview Effects">
           <MidiEffectList></MidiEffectList>
         </Tab>
-        <Tab eventKey="midiDevices" title="MIDI Devices">
+        <Tab eventKey="midiDevices" title="Manage MIDI Devices">
           <DeviceList></DeviceList>
           <DeviceAddForm></DeviceAddForm>
         </Tab>
       </Tabs>
+      <hr />
+      <TwitchEventsLog />
     </MidiDeviceProvider>
   );
 }

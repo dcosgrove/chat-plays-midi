@@ -9,8 +9,7 @@ function useMidiDeviceList() {
       if(err) {
         console.error('Unable to enable WebMIDI', err);
         setDevices([]);
-      } else {
-        console.log('devices', webmidi.outputs);
+      } else {      
         setDevices(webmidi.outputs);
       }
     });

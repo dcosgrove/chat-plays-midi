@@ -4,13 +4,15 @@ const Effects = [
   [ 'Toggle Distortion', 3 ],
   [ 'Toggle Phaser', 4 ],
   [ 'Toggle Chorus', 5 ],
-  [ 'Toggle Delay', 6 ],
+  // 6 IS CURSED
   [ 'Toggle Reverb', 7 ],
+  [ 'Toggle Delay', 8 ],
 ]
 
 const ArchetypeEffects = (device, channel) => {
   return Effects.reduce((effectFns, [ name, cc ]) => {
       effectFns[name] = () => {
+        console.log('sending cc', cc);
         device.sendControlChange(cc, 1, channel);
       };
 
