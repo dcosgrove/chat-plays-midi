@@ -9,8 +9,8 @@ import { AuthContext } from "./Auth";
 
 export const TwitchEventsContext = createContext({
   events: [],
-  onNewEvent: (cb) => { cb() },
-  registerEventListeners: (listenerFn) => {}
+  registerEventListeners: (listenerFn) => {},
+  connectionStatus: 'disconnected'
 });
 
 export const TwitchEventsProvider = ({ children }) => {
@@ -45,20 +45,19 @@ export const TwitchEventsProvider = ({ children }) => {
     }    
   }, [ events ])
 
-  useTwitchPubSubClient(clientId, token, onChannelPointRedemption);
+  const connectionStatus = useTwitchPubSubClient(clientId, token, onChannelPointRedemption);
 
   return <TwitchEventsContext.Provider value={{ 
       events,
       registerEventListeners: (eventListeners) => {
-        console.log('registering event listeners...', eventListeners);
         setEventListeners((previous) => {
-          console.log('setting event listener...');
           return [
             ...previous,
             ...eventListeners
           ];
         });
-      }
+      },
+      connectionStatus
   }}>
     {children}
   </TwitchEventsContext.Provider>
