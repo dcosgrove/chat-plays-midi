@@ -7,6 +7,7 @@ import MidiEffectList from './MidiEffectList';
 import TwitchEventsLog from './TwitchEventsLog';
 import MidiDeviceProvider from './context/MidiDevices';
 import TriggersList from './TriggersList';
+import TriggersAddForm from './TriggersAddForm';
 
 function Browser() {
   return (
@@ -14,6 +15,7 @@ function Browser() {
       <Tabs defaultActiveKey="browser" id="browser" className="mb-3">
         <Tab eventKey="triggers" title="Triggers">
           <TriggersList />
+          <TriggersAddForm></TriggersAddForm>
         </Tab>
         <Tab eventKey="previewEffects" title="Preview Effects">
           <MidiEffectList></MidiEffectList>

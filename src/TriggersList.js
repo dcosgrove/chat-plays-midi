@@ -1,88 +1,70 @@
 import {
-  useContext,
-  useEffect,
-  useState
+  useContext
 } from 'react';
 
 import {
   Container,
-  ListGroup
+  Row,
+  Col,
+  Table,
+  Button
 } from 'react-bootstrap';
-import { MidiDeviceContext } from './context/MidiDevices';
 
 import { TwitchEventsContext } from './context/TwitchEvents';
 
+const formatConditionName = ({ type, name }) => {
+  switch (type) {
+    case 'channelPoint':
+      return `[Channel Points] ${name}`
+    default:
+      return 'Error'
+  }
+};
+
 function TriggersList() {
     const {
-      registerEventListeners
+      eventListeners,
+      unregisterEventListener
     } = useContext(TwitchEventsContext);
 
-    const {
-      devices
-    } = useContext(MidiDeviceContext);
-
-    const [ triggers, setTriggers ] = useState([]);
-
-    useEffect(() => {
-      if (devices.length > 0) {
-        const device = devices[0];
-        const reverbListener = {
-          id: 1,
-          device: device.alias,
-          condition: {
-            type: 'channelPoint',
-            name: 'Tone: Toggle Reverb'
-          },
-          action: device.effects['Toggle Reverb']
-          // action: () => {...}
-        };
-
-        const delayListener = {
-          id: 2,
-          device: device.alias,
-          condition: {
-            type: 'channelPoint',
-            name: 'Tone: Toggle Delay'
-          },
-          action: device.effects['Toggle Delay']
-        };
-
-        const overdriveListener = {
-          id: 3,
-          device: device.alias,
-          condition: {
-            type: 'channelPoint',
-            name: 'Tone: Toggle OD'
-          },
-          action: device.effects['Toggle Overdrive']
-        };
-
-        registerEventListeners([
-          reverbListener,
-          delayListener,
-          overdriveListener
-        ]);
-
-        setTriggers([
-          ...triggers,
-          ...[ reverbListener, delayListener, overdriveListener ]
-        ]);
-      }
-    }, [devices]);
-
-
-    return <Container>
-      <ListGroup>
-        {
-          triggers.map((trigger) => {
-            const { id, condition, device } = trigger;
-            return <ListGroup.Item key={id}>
-              {`ID: ${id} | Twitch Event: ${condition.name} | Device: ${device} }`}
-            </ListGroup.Item>
-          })
-        }
-      </ListGroup>
+    return (
+      <Container fluid>
+      <Row>
+        <Col>
+          <Table striped bordered variant="light">
+            <thead>
+              <tr>
+                <th>Twitch Event</th>
+                <th>Device</th>
+                <th>Effects</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+            {
+              eventListeners.map(({ id, condition, device, effects }) => {
+                  console.log('device id', id);
+                  return <tr key={id}>
+                    <td>{formatConditionName(condition)}</td>
+                    <td>{device.alias}</td>
+                    <td>{effects.reduce((out, effect) => (out + ' ' + effect.name), '')}</td>
+                    <td>
+                      <Button variant="danger" onClick={() => {
+                        unregisterEventListener(id);
+                      }}>
+                        Remove
+                      </Button>
+                    </td>
+                  </tr>
+                }
+              )
+            }
+            </tbody>
+          </Table>
+        </Col>
+      </Row>
     </Container>
+    );
 }
 
 export default TriggersList;

@@ -3,7 +3,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import {
   Button,
   Card,
-  Container
+  Container,
+  Stack
 } from 'react-bootstrap';
 import {
   useContext
@@ -22,13 +23,16 @@ function LoginGate(props) {
     const REDIRECT_URL = `${window.location.protocol}//${window.location.host}${window.location.pathname}authorize`
 
     return loggedIn ? props.children : 
-      <Card>
+      <Card className="mt-3">
         <Card.Body>
-          <Button onClick={() => {
-            window.location.href = `https://id.twitch.tv/oauth2/authorize?client_id=${clientId}&redirect_uri=${REDIRECT_URL}&response_type=token&scope=bits%3Aread%20channel%3Aread%3Aredemptions%20channel%3Aread%3Asubscriptions`;
-          }}>
-            Connect to Twitch
-          </Button>
+          <Stack direction="horizontal" gap={2}>
+            <div>Connect your Twitch.TV account in order to get started:</div>
+            <Button onClick={() => {
+              window.location.href = `https://id.twitch.tv/oauth2/authorize?client_id=${clientId}&redirect_uri=${REDIRECT_URL}&response_type=token&scope=bits%3Aread%20channel%3Aread%3Aredemptions%20channel%3Aread%3Asubscriptions`;
+            }}>
+              Twitch.TV Login
+            </Button>
+            </Stack>
         </Card.Body>
       </Card>
 }

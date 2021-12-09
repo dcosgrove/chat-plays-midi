@@ -23,20 +23,22 @@ function App() {
     <AuthProvider>
       <TwitchEventsProvider>
         <div className="App"> 
-          <Navbar bg="light" expand="sm">
+          <Navbar variant="dark" bg="dark" expand="sm" className="mb-3">
             <Container>
               <Navbar.Brand>Chat Plays MIDI</Navbar.Brand>
               <Nav className="me-auto">
-                <Nav.Link href="#setup">Setup Guide</Nav.Link>
-                <Nav.Link href="#contact">Contact</Nav.Link>
+                {/* <Nav.Link href="#setup">Setup Guide</Nav.Link>
+                <Nav.Link href="#contact">Contact</Nav.Link> */}
               </Nav>
-              <Nav.Item className="justify-content-md-center">
+              <Nav.Item>
                 <Container>
-                  <LoginStatus />
+                  <LoginStatus /> 
                 </Container>
               </Nav.Item>
             </Container>
           </Navbar>
+          
+          {/* ----- MAIN CONTENT ---- */}
           <Container>
             <BrowserRouter basename={process.env.PUBLIC_URL}>
               <Routes>
