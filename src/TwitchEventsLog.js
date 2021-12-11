@@ -3,6 +3,8 @@ import {
 } from 'react';
 import {
   Container,
+  FloatingLabel,
+  Form,
   ListGroup
 } from 'react-bootstrap';
 
@@ -10,21 +12,23 @@ import { TwitchEventsContext } from './context/TwitchEvents';
 
 function TwitchEventsLog() {
     const {
-      events,
-      onNewEvent
+      events
     } = useContext(TwitchEventsContext);
 
+    const formattedLogs = events.map(({ userDisplayName, rewardTitle, redemptionDate }) => {
+      return `[${redemptionDate}] Username: ${userDisplayName} | Channel Point Redemption: ${rewardTitle}`
+    }).join('\n');
+    
     return <Container>
-      <h2>Most Recent Events</h2>
-      <ListGroup>
-        {
-          events.map(({ userDisplayName, rewardTitle, redemptionDate }) => {
-            return <ListGroup.Item key={`${userDisplayName}-${redemptionDate}`}>
-              {`Username: ${userDisplayName} | Reward: ${rewardTitle} | Date: ${redemptionDate}`}
-            </ListGroup.Item>
-          })
-        }
-      </ListGroup>
+      <FloatingLabel controlId="logsTextArea" label="Twitch Event Log">
+        <Form.Control
+          as="textarea"
+          readOnly
+          value={formattedLogs}
+          style={{ height: '400px' }}
+        />
+      </FloatingLabel>
+
     </Container>
 }
 

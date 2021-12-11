@@ -28,9 +28,10 @@ function Browser() {
         <Tab eventKey="saveConfiguration" title="Save/Load Configuration">
           <ConfigurationBackupForm />
         </Tab>
+        <Tab eventKey="eventLog" title="Twitch Event Log">
+          <TwitchEventsLog />
+        </Tab>
       </Tabs>
-      <hr />
-      <TwitchEventsLog />
     </MidiDeviceProvider>
   );
 }
