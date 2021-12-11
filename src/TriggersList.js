@@ -43,7 +43,6 @@ function TriggersList() {
             <tbody>
             {
               eventListeners.map(({ id, condition, device, effects }) => {
-                  console.log('device id', id);
                   return <tr key={id}>
                     <td>{formatConditionName(condition)}</td>
                     <td>{device.alias}</td>

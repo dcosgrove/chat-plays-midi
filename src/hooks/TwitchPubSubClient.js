@@ -23,7 +23,7 @@ function useTwitchPubSubClient(clientId, token, onChannelPointRedemption) {
 
   useEffect(() => {
     if(!client && token !== '') {
-      console.log('setting up pubsub client...');
+      console.log('setting up Twitch pubsub client...');
       const authProvider = new StaticAuthProvider(clientId, token);      
       const pubSubClient = new SingleUserPubSubClient({
         authProvider: authProvider

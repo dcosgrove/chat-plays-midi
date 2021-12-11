@@ -8,6 +8,7 @@ import TwitchEventsLog from './TwitchEventsLog';
 import MidiDeviceProvider from './context/MidiDevices';
 import TriggersList from './TriggersList';
 import TriggersAddForm from './TriggersAddForm';
+import ConfigurationBackupForm from './ConfigurationBackupForm';
 
 function Browser() {
   return (
@@ -15,14 +16,17 @@ function Browser() {
       <Tabs defaultActiveKey="browser" id="browser" className="mb-3">
         <Tab eventKey="triggers" title="Triggers">
           <TriggersList />
-          <TriggersAddForm></TriggersAddForm>
+          <TriggersAddForm />
         </Tab>
         <Tab eventKey="previewEffects" title="Preview Effects">
-          <MidiEffectList></MidiEffectList>
+          <MidiEffectList />
         </Tab>
         <Tab eventKey="midiDevices" title="Manage MIDI Devices">
-          <DeviceList></DeviceList>
-          <DeviceAddForm></DeviceAddForm>
+          <DeviceList />
+          <DeviceAddForm />
+        </Tab>
+        <Tab eventKey="saveConfiguration" title="Save/Load Configuration">
+          <ConfigurationBackupForm />
         </Tab>
       </Tabs>
       <hr />

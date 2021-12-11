@@ -12,22 +12,7 @@ import { useState, useContext } from 'react';
 import DeviceTypes from './DeviceTypes';
 import { MidiDeviceContext } from './context/MidiDevices';
 
-import KemperEffects from './effects/KemperEffects';
-import ArchetypeEffects from './effects/ArchetypeEffects';
-
-// attach a list of effects to a device based on its type
-const getEffectsForDevice = (midiOutput, midiChannel, deviceType) => {
-  if(deviceType === 'kemper') {
-    return KemperEffects(midiOutput, midiChannel);
-  } else if(deviceType === 'neural-henson') {
-    return ArchetypeEffects(midiOutput, midiChannel);
-  } else if(deviceType === 'neural-gojira') {
-    return ArchetypeEffects(midiOutput, midiChannel);
-  } else {
-    // TODO
-    return [];
-  }
-};
+import attachEffectsToDevice from './effects/Effects';
 
 function DeviceAddForm() {
 
@@ -52,10 +37,7 @@ function DeviceAddForm() {
     } else {
       setDevices([
         ...devices,
-        {
-          ...device,
-          effects: getEffectsForDevice(device.output, device.midiChannel, device.type)
-        }
+        attachEffectsToDevice(device)
       ]);
     }
   };
@@ -149,7 +131,8 @@ function DeviceAddForm() {
               </FloatingLabel>
             </Col>
           </Row>
-          <Row> 
+          <Row>
+            <Col>
               <Button
                 onClick={() => {
                   addDevice({
@@ -164,6 +147,7 @@ function DeviceAddForm() {
                 variant="primary">
                 Add Device
               </Button>
+            </Col>
           </Row>
         </Form>
       </Row>

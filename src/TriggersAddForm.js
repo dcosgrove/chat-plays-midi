@@ -35,19 +35,6 @@ function TriggersAddForm() {
     registerEventListeners
   } = useContext(TwitchEventsContext);
 
-// {
-//   id: 2,
-//   device: device.alias,
-//   condition: {
-//     type: 'channelPoint',
-//     name: 'Tone: Toggle Delay'
-//   },
-//   effects: [{
-//     name: 'Toggle Delay',
-//     exec: device.effects['Toggle Delay']
-//   }]
-// };
-
   const addTrigger = (formValues) => {
     const trigger = {
       id: `${formValues.device.alias}-${formValues.condition.type}-${formValues.condition.name}`,
@@ -158,7 +145,8 @@ function TriggersAddForm() {
               </FloatingLabel>
             </Col>
           </Row>
-          <Row> 
+          <Row>
+            <Col>
               <Button
                 onClick={() => {
                   addTrigger({
@@ -170,6 +158,7 @@ function TriggersAddForm() {
                 variant="primary">
                 Add Trigger
               </Button>
+            </Col>
           </Row>
         </Form>
       </Row>
