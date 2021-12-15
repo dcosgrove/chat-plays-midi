@@ -19,7 +19,7 @@ function Browser() {
           <TriggersList />
           <TriggersAddForm />
         </Tab>
-        <Tab eventKey="previewEffects" title="Preview Effects">
+        <Tab eventKey="previewEffects" title="Effects">
           <MidiEffectList />
           <EffectAddForm />
         </Tab>

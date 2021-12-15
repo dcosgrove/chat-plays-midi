@@ -22,10 +22,10 @@ function TriggersAddForm() {
       type: '',
       name: ''
     },
-    effects: []
+    effect: ''
   };
 
-  const [ { device, condition, effects }, setFormValues ] = useState(initialState);
+  const [ { device, condition, effect }, setFormValues ] = useState(initialState);
 
   const {
     devices
@@ -41,8 +41,8 @@ function TriggersAddForm() {
       device: formValues.device,
       condition: formValues.condition,
       effects: [{
-        name: formValues.effects,
-        exec: formValues.device.effects[formValues.effects]
+        name: formValues.effect,
+        exec: formValues.device.effects[formValues.effect]
       }]
     };
     
@@ -124,13 +124,13 @@ function TriggersAddForm() {
             <Col md>
               <FloatingLabel controlId="formEffects" label="Effects">
                 <Form.Select
-                  value={effects}
+                  value={effect}
                   onChange={(e) => {
                     
                     setFormValues((formValues) => {
                       return {
                         ...formValues,
-                        effects: e.target.value
+                        effect: e.target.value
                       }
                     });
                   }}
@@ -152,7 +152,7 @@ function TriggersAddForm() {
                   addTrigger({
                     device,
                     condition,
-                    effects
+                    effect
                   });
                 }}
                 variant="primary">
