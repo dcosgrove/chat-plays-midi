@@ -1,7 +1,8 @@
 const DeviceTypes = {
   'kemper': 'Kemper Profiler',
   'neural-henson': 'Neural DSP Archetype: Tim Henson',
-  'neural-gojira': 'Neural DSP Archetype: Gojira'
+  'neural-gojira': 'Neural DSP Archetype: Gojira',
+  'quad-cortex': 'Neural DSP Quad Cortex'
 }
 
 export default DeviceTypes;

@@ -9,6 +9,7 @@ import MidiDeviceProvider from './context/MidiDevices';
 import TriggersList from './TriggersList';
 import TriggersAddForm from './TriggersAddForm';
 import ConfigurationBackupForm from './ConfigurationBackupForm';
+import EffectAddForm from './EffectAddForm';
 
 function Browser() {
   return (
@@ -20,6 +21,7 @@ function Browser() {
         </Tab>
         <Tab eventKey="previewEffects" title="Preview Effects">
           <MidiEffectList />
+          <EffectAddForm />
         </Tab>
         <Tab eventKey="midiDevices" title="Manage MIDI Devices">
           <DeviceList />

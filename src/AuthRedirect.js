@@ -15,9 +15,7 @@ function AuthRedirect() {
   useEffect(() => {
     // TODO - figure out expiration time
     const expiresAt = Date.now();
-    console.group('updating with', token, expiresAt);
     updateToken(token, expiresAt);
-    
   });
 
   return <div>
