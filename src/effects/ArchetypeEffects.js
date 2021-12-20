@@ -1,5 +1,5 @@
 // Effect name to midi CC tuples
-const Effects = [
+const HENSON_EFFECTS = [
   [ 'Toggle Overdrive', 1, 'control' ],
   [ 'Toggle Distortion', 3, 'control'],
   [ 'Toggle Phaser', 4, 'control'],
@@ -11,17 +11,41 @@ const Effects = [
   [ 'Change Patch: Lead Shred', 1, 'program' ]
 ]
 
-const ArchetypeEffects = (device, channel) => {
-  return Effects.reduce((effectFns, [ name, cc, type ]) => {
-      effectFns[name] = () => {
-        if (type === 'control') {
-          device.sendControlChange(cc, 1, channel);
-        } else if (type === 'program') {
-          device.sendProgramChange(cc, channel);
-        }
-      };
+const CreateArchetypeBuiltinEffect = (device, channel) => ({ cc, midiType }) => () => {
+  switch(midiType) {
+    case 'control':
+      return device.sendControlChange(cc, 1, channel);
+    case 'program':
+      return device.sendProgramChange(cc, channel);
+    default:
+      return;
+  }
+}
 
-      return effectFns;
+const CreateEffectFromParams = (device, channel) => (params) => {
+  switch (params.effectType) {
+    case 'builtin':
+      return CreateArchetypeBuiltinEffect(device, channel)(params);
+    default:
+      return;
+  }
+}
+
+const ArchetypeEffects = (device, channel) => {
+  return HENSON_EFFECTS.reduce((out, [ name, cc, midiType ]) => {
+    const params = {
+      effectType: 'builtin',
+      name,
+      cc,
+      midiType
+    }
+
+    out[name] = {
+      params,
+      exec: CreateEffectFromParams(device, channel)(params)
+    }
+
+    return out;
   }, {});
 }  
 

@@ -41,7 +41,9 @@ export const TwitchEventsProvider = ({ children }) => {
         const { rewardTitle } = events[events.length-1];
         eventListeners.forEach(({ condition, effects }) => {
         if(condition.type === 'channelPoint' && condition.name === rewardTitle) {
-          effects.forEach(({ exec }) => exec());
+          effects.forEach(({ exec }) => {
+            exec();
+          });
         }
       });
     }    

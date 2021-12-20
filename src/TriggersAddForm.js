@@ -41,7 +41,7 @@ function TriggersAddForm() {
       condition: formValues.condition,
       effects: [{
         name: formValues.effect,
-        exec: formValues.device.effects[formValues.effect]
+        exec: formValues.device.effects[formValues.effect].exec
       }]
     };
     

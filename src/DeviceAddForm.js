@@ -12,10 +12,9 @@ import { useState, useContext } from 'react';
 import DeviceTypes from './DeviceTypes';
 import { MidiDeviceContext } from './context/MidiDevices';
 
-import attachEffectsToDevice from './effects/Effects';
+import attachBuiltinEffectsToDevice from './effects/Effects';
 
 function DeviceAddForm() {
-
   const initialState = {
     alias: 'My Example Device',
     type: '',
@@ -37,7 +36,7 @@ function DeviceAddForm() {
     } else {
       setDevices([
         ...devices,
-        attachEffectsToDevice(device)
+        attachBuiltinEffectsToDevice(device)
       ]);
     }
   };

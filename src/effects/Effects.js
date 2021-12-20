@@ -18,11 +18,11 @@ const getEffectsForDevice = (midiOutput, midiChannel, deviceType) => {
   }
 };
 
-const attachEffectsToDevice = (device) => {
+const attachBuiltinEffectsToDevice = (device) => {
   return {
     ...device,
     effects: getEffectsForDevice(device.output, device.midiChannel, device.type)
   }
 };
 
-export default attachEffectsToDevice;
+export default attachBuiltinEffectsToDevice;

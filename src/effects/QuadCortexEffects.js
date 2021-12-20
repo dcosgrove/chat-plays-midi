@@ -3,15 +3,6 @@
 
 // Effect name to midi CC tuples
 const Effects = [
-  // [ 'Toggle Overdrive', 1, 'control' ],
-  // [ 'Toggle Distortion', 3, 'control'],
-  // [ 'Toggle Phaser', 4, 'control'],
-  // [ 'Toggle Chorus', 5, 'control'],
-  // // 6 IS CURSED
-  // [ 'Toggle Reverb', 7, 'control' ],
-  // [ 'Toggle Delay', 8, 'control' ],
-  // [ 'Change Patch: Clean Delay', 0, 'program' ],
-  // [ 'Change Patch: Lead Shred', 1, 'program' ]
 ]
 
 const QuadCortexEffects = (device, channel) => {
@@ -45,7 +36,7 @@ export const QC_EFFECT_TYPES = [
 ];
 
 export const CreatePresetChangeEffect = (device, channel) => (setlist, preset) => () => {
-  console.log('firing MIDI preset change: ', device, channel, setlist, preset);
+  console.log('[Debug] QC MIDI preset change: ', device, channel, setlist, preset);
 
   // first CC for preset divvying
   if(preset < 128) {
@@ -64,7 +55,7 @@ export const CreatePresetChangeEffect = (device, channel) => (setlist, preset) =
 export const CreateSceneChangeEffect = (device, channel) => (scene) => () => {
   // CC#43 - neural scene changes
   device.sendControlChange(43, SceneLetterMap[scene], channel);
-  console.log('Changing scene to: ', scene);
+  console.log('[Debug] QC Changing scene to: ', scene);
 }
 
 export const CreateEffectFromParams = (device, channel) => (params) => {
@@ -76,6 +67,30 @@ export const CreateEffectFromParams = (device, channel) => (params) => {
     default:
       return;
   }
+}
+
+export const SerializeQuadCortexEffects = (effects) => {
+  return effects.map((effect) => {
+    switch (effect.params.effectType) {
+      case 'Change Preset':
+        return {
+          deviceType: 'quad-cortex',
+          name: effect.name,
+          effectType: effect.params.effectType,
+          setlist: effect.params.setlistNumber,
+          preset: effect.params.presetNumber
+        };
+      case 'Change Scene':
+        return {
+          deviceType: 'quad-cortex',
+          name: effect.name,
+          effectType: effect.params.effectType,
+          scene: effect.params.scene 
+        };
+      default:
+        return;
+    }
+  });
 }
 
 export default QuadCortexEffects;

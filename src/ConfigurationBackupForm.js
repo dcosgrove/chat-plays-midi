@@ -14,8 +14,7 @@ import {
 import { MidiDeviceContext } from './context/MidiDevices';
 import { TwitchEventsContext } from './context/TwitchEvents';
 
-import attachEffectsToDevice from './effects/Effects';
-
+import attachBuiltinEffectsToDevice from './effects/Effects';
 
 const saveConfigurationToStorage = (name, { triggers, devices }) => {
   localStorage.setItem(`${name}-triggers`, JSON.stringify(triggers));
@@ -70,6 +69,13 @@ function ConfigurationBackupForm() {
         };
       });
 
+      console.log(devices, 'DEBUG');
+      // const serializedEffects = devices.reduce((serialized, device) => {
+      //   if(device.type === 'quad-cortex') {
+      //     const 
+      //   }
+      // }, [])
+
       return {
         triggers: serializedTriggers,
         devices: serializedDevices
@@ -87,10 +93,11 @@ function ConfigurationBackupForm() {
             output: midiOutput
           };
 
+
           return {
             devices: [
               ...devices,
-              attachEffectsToDevice(deviceWithoutEffects)
+              attachBuiltinEffectsToDevice(deviceWithoutEffects)
             ],
             errors: errors
           }
@@ -121,7 +128,7 @@ function ConfigurationBackupForm() {
             effects: trigger.effects.map((name) => {
               return {
                 name: name,
-                exec: device.effects[name]
+                exec: device.effects[name].exec
               }
             })
           }

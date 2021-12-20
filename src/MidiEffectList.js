@@ -22,11 +22,11 @@ function MidiEffectList() {
   } = useContext(TwitchEventsContext);
 
   const effects = devices.reduce((effects, device) => {
-    const deviceEffects = Object.entries(device.effects).map(([effect, trigger]) => ({
+    const deviceEffects = Object.entries(device.effects).map(([effect, { exec }]) => ({
       key: `${device.key}-${effect}`,
       deviceAlias: device.alias,
       name: effect,
-      trigger: trigger
+      exec
     }));
 
     return [
@@ -76,7 +76,8 @@ function MidiEffectList() {
                     <td>
                       <Button 
                         onClick={() => {
-                          effect.trigger();
+                          console.log('effect', effect);
+                          effect.exec();
                         }}
                       >
                         Trigger

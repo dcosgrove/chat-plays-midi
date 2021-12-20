@@ -143,7 +143,10 @@ function EffectAddForm() {
     const otherDevices = devices.filter((d) => d.id !== device.id);
 
     const updatedEffects = device.effects;
-    updatedEffects[effectName] = CreateEffectFromParams(device.output, device.channel)(effectParams);
+    updatedEffects[effectName] = {
+      params: effectParams,
+      exec: CreateEffectFromParams(device.output, device.channel)(effectParams)
+    };
     
     setDevices([
       ...otherDevices,
