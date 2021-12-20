@@ -11,7 +11,6 @@ import { useState, useContext } from 'react';
 
 import { MidiDeviceContext } from './context/MidiDevices';
 import { TwitchEventsContext } from './context/TwitchEvents';
-import { compareScopes } from '@twurple/auth/lib/helpers';
 
 function TriggersAddForm() {
   const initialState = {
