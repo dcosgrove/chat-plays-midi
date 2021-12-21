@@ -5,7 +5,7 @@
 const Effects = [
 ]
 
-const QuadCortexEffects = (device, channel) => {
+export const QuadCortexEffects = (device, channel) => {
   return Effects.reduce((effectFns, [ name, cc, type ]) => {
       effectFns[name] = () => {
         if (type === 'control') {
@@ -36,7 +36,7 @@ export const QC_EFFECT_TYPES = [
 ];
 
 export const CreatePresetChangeEffect = (device, channel) => (setlist, preset) => () => {
-  console.log('[Debug] QC MIDI preset change: ', device, channel, setlist, preset);
+  console.log('[Debug] QC MIDI preset change: Setlist', setlist, 'Preset', preset);
 
   // first CC for preset divvying
   if(preset < 128) {
@@ -67,30 +67,6 @@ export const CreateEffectFromParams = (device, channel) => (params) => {
     default:
       return;
   }
-}
-
-export const SerializeQuadCortexEffects = (effects) => {
-  return effects.map((effect) => {
-    switch (effect.params.effectType) {
-      case 'Change Preset':
-        return {
-          deviceType: 'quad-cortex',
-          name: effect.name,
-          effectType: effect.params.effectType,
-          setlist: effect.params.setlistNumber,
-          preset: effect.params.presetNumber
-        };
-      case 'Change Scene':
-        return {
-          deviceType: 'quad-cortex',
-          name: effect.name,
-          effectType: effect.params.effectType,
-          scene: effect.params.scene 
-        };
-      default:
-        return;
-    }
-  });
 }
 
 export default QuadCortexEffects;

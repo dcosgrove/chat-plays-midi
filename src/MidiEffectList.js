@@ -76,7 +76,6 @@ function MidiEffectList() {
                     <td>
                       <Button 
                         onClick={() => {
-                          console.log('effect', effect);
                           effect.exec();
                         }}
                       >

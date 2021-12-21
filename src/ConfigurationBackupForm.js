@@ -14,21 +14,44 @@ import {
 import { MidiDeviceContext } from './context/MidiDevices';
 import { TwitchEventsContext } from './context/TwitchEvents';
 
-import attachBuiltinEffectsToDevice from './effects/Effects';
+import { attachEffectsToDevice } from './effects/Effects';
 
-const saveConfigurationToStorage = (name, { triggers, devices }) => {
+// // alias: "QC"
+// deviceType: "quad-cortex"
+// effectType: "Change Scene"
+// name: "Scene change H"
+// params: [Array(2)]
+
+const deserializeEffects = (effects) => {
+  return effects.map((effect) => {
+    const params = {
+      effectType: effect.effectType,
+      ...Object.fromEntries(effect.params)
+    };
+
+    return {
+      name: effect.name,
+      params
+    }
+  })
+};
+
+const saveConfigurationToStorage = (name, { triggers, devices, effects }) => {
   localStorage.setItem(`${name}-triggers`, JSON.stringify(triggers));
   localStorage.setItem(`${name}-devices`, JSON.stringify(devices));
+  localStorage.setItem(`${name}-effects`, JSON.stringify(effects));
 };
 
 const loadConfigurationFromStorage = (name) => {
   const triggers = JSON.parse(localStorage.getItem(`${name}-triggers`));
   const devices = JSON.parse(localStorage.getItem(`${name}-devices`));
+  const effects = JSON.parse(localStorage.getItem(`${name}-effects`));
 
-  if (triggers && devices) {
+  if (triggers && devices && effects) {
     return {
       triggers,
-      devices
+      devices,
+      effects
     }
   } else {
     return null;
@@ -69,35 +92,57 @@ function ConfigurationBackupForm() {
         };
       });
 
-      console.log(devices, 'DEBUG');
-      // const serializedEffects = devices.reduce((serialized, device) => {
-      //   if(device.type === 'quad-cortex') {
-      //     const 
-      //   }
-      // }, [])
+      const serializedEffects = devices.reduce((serializedEffectsList, device) => {
+        const deviceDetails = {
+          alias: device.alias,
+          deviceType: device.type
+        };
+
+        const effects = Object.entries(device.effects).map(([ name, { params } ]) => {
+          const {
+            effectType,
+            ...extraParams
+          } = params;
+
+          const serializedParams = Object.entries(extraParams);
+          return {
+            ...deviceDetails,
+            name,
+            effectType,
+            params: serializedParams  
+          }
+        });
+
+        return [
+          ...serializedEffectsList,
+          ...effects
+        ];
+      }, []);
 
       return {
         triggers: serializedTriggers,
-        devices: serializedDevices
+        devices: serializedDevices,
+        effects: serializedEffects
       };
     };
   
-    const deserializeAndLoadConfiguration = ({ triggers = [], devices = [] }) => {
+    const deserializeAndLoadConfiguration = ({ triggers = [], devices = [], effects = [] }) => {
       const deviceDeserializationResult = devices.reduce(({ devices, errors }, device) => {
         const midiOutput = midiOutputs.find(output => output.id === device.midiOutput);
         if(midiOutput) {
-
           const deviceWithoutEffects = {
             ...device,
             key: device.id,
             output: midiOutput
           };
 
+          // filter for device and deserialize
+          const deserializedEffects = deserializeEffects(effects.filter((e) => e.alias === device.alias));
 
           return {
             devices: [
               ...devices,
-              attachBuiltinEffectsToDevice(deviceWithoutEffects)
+              attachEffectsToDevice(deviceWithoutEffects, deserializedEffects)
             ],
             errors: errors
           }

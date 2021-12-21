@@ -1,9 +1,12 @@
 import ArchetypeEffects from './ArchetypeEffects';
 import KemperEffects from './KemperEffects';
-import QuadCortexEffects from './QuadCortexEffects';
+import {
+  QuadCortexEffects,
+  CreateEffectFromParams as CreateQuadCortexEffectFromParams
+ } from './QuadCortexEffects';
 
 // attach a list of effects to a device based on its type
-const getEffectsForDevice = (midiOutput, midiChannel, deviceType) => {
+const getBuiltinEffectsForDevice = (midiOutput, midiChannel, deviceType) => {
   if(deviceType === 'kemper') {
     return KemperEffects(midiOutput, midiChannel);
   } else if(deviceType === 'neural-henson') {
@@ -18,10 +21,38 @@ const getEffectsForDevice = (midiOutput, midiChannel, deviceType) => {
   }
 };
 
+const getInitializedEffectsForDevice = (device, midiChannel, deviceType, effects) => {
+  return effects.map((effect) => {
+    if(deviceType === 'quad-cortex') {
+      return {
+        ...effect,
+        exec: CreateQuadCortexEffectFromParams(device, midiChannel)(effect.params)
+      }
+    } else {
+      return {}
+    }
+  }).reduce((effectsMap, effect) => {
+    effectsMap[effect.name] = {
+      params: effect.params,
+      exec: effect.exec
+    };
+    
+    return effectsMap;
+  }, {});
+};
+
 const attachBuiltinEffectsToDevice = (device) => {
   return {
     ...device,
-    effects: getEffectsForDevice(device.output, device.midiChannel, device.type)
+    effects: getBuiltinEffectsForDevice(device.output, device.channel, device.type)
+  }
+};
+
+export const attachEffectsToDevice = (device, effects) => {
+
+  return {
+    ...device,
+    effects: getInitializedEffectsForDevice(device.output, device.channel, device.type, effects)
   }
 };
 

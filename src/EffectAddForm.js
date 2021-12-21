@@ -138,7 +138,7 @@ function EffectAddForm() {
 
   const addEffect = () => {
     // make a QC style program change
-    console.log('making effect for device', device);    
+    
     // replace device with updated preset list
     const otherDevices = devices.filter((d) => d.id !== device.id);
 
