@@ -10,13 +10,94 @@ import {
 import { useState, useContext } from 'react';
 
 import { MidiDeviceContext } from './context/MidiDevices';
-import { TwitchEventsContext } from './context/TwitchEvents';
 
 import {
   QC_EFFECT_TYPES,
-  CreateEffectFromParams,
+  CreateEffectFromParams as CreateQuadCortexEffectFromParams,
   SceneLetterMap
 } from './effects/QuadCortexEffects';
+
+import {
+  CreateEffectFromParams as CreateGenericEffectFromParams
+} from './effects/GenericDeviceEffects';
+
+function GenericMidiEffectsRow({
+  setEffectParams,
+  effectParams
+}) {
+  const {
+    effectType = '',
+    midiCc = '',
+    // midiCcValue = '',
+    midiPc = ''
+  } = effectParams;
+
+  return <>
+    <Row className="mb-3">
+    <Col md>
+      <FloatingLabel controlId="formMidiEffectType" label="Effect Type">
+        <Form.Select
+          value={effectType}
+          onChange={(e) => {
+            // if we are changing to a new type, clear existing params
+            if(e.target.value !== effectType) {
+              setEffectParams({
+                  effectType: e.target.value
+              })
+            }
+          }}
+          aria-label="Effect Type">
+          <option value=""></option>
+          <option key="Control Change" value="Control Change">Control Change</option>
+          <option key="Program Change" value="Program Change">Program Change</option>            
+        </Form.Select>
+      </FloatingLabel>
+    </Col>
+    { effectType === 'Control Change' ? 
+      <>
+        <Col xs>
+          <FloatingLabel controlId="floatingCcNumber" label="CC #">
+            <Form.Control
+              type="text"
+              value={midiCc}
+              onChange={(e) => {
+                setEffectParams({
+                      ...effectParams,
+                      midiCc: e.target.value
+                  });
+                }
+              }
+              />
+          </FloatingLabel>
+        </Col>
+        <Col xs></Col>
+      </> : effectType === 'Program Change' ?
+      <>
+      <Col xs>
+        <FloatingLabel controlId="floatingPcNumber" label="PC #">
+          <Form.Control
+            type="text"
+            value={midiPc}
+            onChange={(e) => {
+              setEffectParams({
+                    ...effectParams,
+                    midiPc: e.target.value
+                });
+              }
+            }
+            />
+        </FloatingLabel>
+      </Col>
+      <Col xs></Col>
+    </> : 
+      <> 
+        <Col xs></Col>
+        <Col xs></Col> 
+      </>
+    }
+  </Row>
+  </>
+};
 
 function QuadCortexEffectsRow({
   setEffectParams,
@@ -138,15 +219,22 @@ function EffectAddForm() {
 
   const addEffect = () => {
     // make a QC style program change
-    
+
     // replace device with updated preset list
     const otherDevices = devices.filter((d) => d.id !== device.id);
 
     const updatedEffects = device.effects;
-    updatedEffects[effectName] = {
-      params: effectParams,
-      exec: CreateEffectFromParams(device.output, device.channel)(effectParams)
-    };
+    if(device.type === 'quad-cortex') {
+      updatedEffects[effectName] = {
+        params: effectParams,
+        exec: CreateQuadCortexEffectFromParams(device.output, device.channel)(effectParams)
+      };
+    } else if(device.type === 'neural-henson') {
+      updatedEffects[effectName] = {
+        params: effectParams,
+        exec: CreateGenericEffectFromParams(device.output, device.channel)(effectParams)
+      }
+    }
     
     setDevices([
       ...otherDevices,
@@ -205,6 +293,17 @@ function EffectAddForm() {
           {
             device.type === 'quad-cortex' ?
               <QuadCortexEffectsRow
+                setEffectParams={(effectParams) => {
+                  setFormValues((formValues) => {
+                    return {
+                      ...formValues,
+                      effectParams
+                    }  
+                  })
+                }}
+                effectParams={effectParams}
+              /> : device.type === 'neural-henson' ?
+              <GenericMidiEffectsRow
                 setEffectParams={(effectParams) => {
                   setFormValues((formValues) => {
                     return {

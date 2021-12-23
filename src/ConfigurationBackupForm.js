@@ -16,12 +16,6 @@ import { TwitchEventsContext } from './context/TwitchEvents';
 
 import { attachEffectsToDevice } from './effects/Effects';
 
-// // alias: "QC"
-// deviceType: "quad-cortex"
-// effectType: "Change Scene"
-// name: "Scene change H"
-// params: [Array(2)]
-
 const deserializeEffects = (effects) => {
   return effects.map((effect) => {
     const params = {
@@ -174,7 +168,7 @@ function ConfigurationBackupForm() {
               return {
                 name: name,
                 exec: device.effects[name].exec
-              }
+              } 
             })
           }
 

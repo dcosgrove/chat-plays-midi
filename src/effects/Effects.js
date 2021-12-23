@@ -5,6 +5,10 @@ import {
   CreateEffectFromParams as CreateQuadCortexEffectFromParams
  } from './QuadCortexEffects';
 
+ import {
+   CreateEffectFromParams as CreateGenericEffectFromParams
+ } from './GenericDeviceEffects';
+
 // attach a list of effects to a device based on its type
 const getBuiltinEffectsForDevice = (midiOutput, midiChannel, deviceType) => {
   if(deviceType === 'kemper') {
@@ -28,8 +32,16 @@ const getInitializedEffectsForDevice = (device, midiChannel, deviceType, effects
         ...effect,
         exec: CreateQuadCortexEffectFromParams(device, midiChannel)(effect.params)
       }
+    } else if(deviceType === 'neural-henson') {
+      return {
+        ...effect,
+        exec: CreateGenericEffectFromParams(device, midiChannel)(effect.params)
+      }
     } else {
-      return {}
+      return {
+        ...effect,
+        exec: () => { console.log('Error: device not supported') }
+      }
     }
   }).reduce((effectsMap, effect) => {
     effectsMap[effect.name] = {
