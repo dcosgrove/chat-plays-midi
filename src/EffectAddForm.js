@@ -229,7 +229,7 @@ function EffectAddForm() {
         params: effectParams,
         exec: CreateQuadCortexEffectFromParams(device.output, device.channel)(effectParams)
       };
-    } else if(device.type === 'neural-henson') {
+    } else if(device.type === 'neural-henson' || device.type === 'generic') {
       updatedEffects[effectName] = {
         params: effectParams,
         exec: CreateGenericEffectFromParams(device.output, device.channel)(effectParams)
@@ -302,7 +302,7 @@ function EffectAddForm() {
                   })
                 }}
                 effectParams={effectParams}
-              /> : device.type === 'neural-henson' ?
+              /> : device.type === 'neural-henson' || device.type === 'generic' ?
               <GenericMidiEffectsRow
                 setEffectParams={(effectParams) => {
                   setFormValues((formValues) => {

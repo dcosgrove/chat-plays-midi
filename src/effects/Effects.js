@@ -20,7 +20,7 @@ const getBuiltinEffectsForDevice = (midiOutput, midiChannel, deviceType) => {
   } else if(deviceType === 'quad-cortex') {
     return QuadCortexEffects(midiOutput, midiChannel);
   }else {
-    // TODO
+    // Generic and others
     return [];
   }
 };
@@ -37,7 +37,12 @@ const getInitializedEffectsForDevice = (device, midiChannel, deviceType, effects
         ...effect,
         exec: CreateGenericEffectFromParams(device, midiChannel)(effect.params)
       }
-    } else {
+    } else if(deviceType === 'generic') {
+      return {
+        ...effect,
+        exec: CreateGenericEffectFromParams(device, midiChannel)(effect.params)
+      }
+    }else {
       return {
         ...effect,
         exec: () => { console.log('Error: device not supported') }
