@@ -46,7 +46,7 @@ function TriggersList() {
                   return <tr key={id}>
                     <td>{formatConditionName(condition)}</td>
                     <td>{device.alias}</td>
-                    <td>{effects.reduce((out, effect) => (out + ' ' + effect.name), '')}</td>
+                    <td>{effects.reduce((out, effect) => (out + ' -> ' + effect.name), '')}</td>
                     <td>
                       <Button variant="danger" onClick={() => {
                         unregisterEventListener(id);

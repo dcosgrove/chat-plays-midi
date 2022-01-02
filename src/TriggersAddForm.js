@@ -7,6 +7,8 @@ import {
   Form
 } from 'react-bootstrap';
 
+import Select from 'react-select';
+
 import { useState, useContext } from 'react';
 
 import { MidiDeviceContext } from './context/MidiDevices';
@@ -21,10 +23,14 @@ function TriggersAddForm() {
       type: '',
       name: ''
     },
-    effect: ''
+    effects: []
   };
 
-  const [ { device, condition, effect }, setFormValues ] = useState(initialState);
+  const [ {
+    device,
+    condition,
+    effects
+  }, setFormValues ] = useState(initialState);
 
   const {
     devices
@@ -39,10 +45,10 @@ function TriggersAddForm() {
       id: `${formValues.device.alias}-${formValues.condition.type}-${formValues.condition.name}`,
       device: formValues.device,
       condition: formValues.condition,
-      effects: [{
-        name: formValues.effect,
-        exec: formValues.device.effects[formValues.effect].exec
-      }]
+      effects: formValues.effects.map((name) => ({
+        name,
+        exec: formValues.device.effects[name].exec 
+      }))
     };
     
     registerEventListeners([
@@ -73,8 +79,8 @@ function TriggersAddForm() {
                   aria-label="Device Type">
                   <option value=""></option>
                   <option value="channelPoint">Channel Points</option>
-                  <option value="bits">Bits</option>
-                  <option value="subscriptions">Subscriptions</option>
+                  {/* <option value="bits">Bits</option>
+                  <option value="subscriptions">Subscriptions</option> */}
                 </Form.Select>
               </FloatingLabel>
             </Col>
@@ -95,7 +101,7 @@ function TriggersAddForm() {
                       });
                     }
                   }
-                  placeholder="Tone: Toggle Reverb" />
+                  placeholder="" />
               </FloatingLabel>
             </Col>
             <Col md>
@@ -120,28 +126,31 @@ function TriggersAddForm() {
                 </Form.Select>
               </FloatingLabel>
             </Col>
-            <Col md>
-              <FloatingLabel controlId="formEffects" label="Effects">
-                <Form.Select
-                  value={effect}
-                  onChange={(e) => {
-                    
-                    setFormValues((formValues) => {
-                      return {
-                        ...formValues,
-                        effect: e.target.value
-                      }
-                    });
-                  }}
-                  aria-label="MIDI Channel">
-                  <option value=""></option>
-                  {
-                    Object.keys(device.effects).map((name) => {
-                      return <option key={name} value={name}>{name}</option>
-                     })
+          </Row>
+          <Row className="mb-3">
+            <Col className="mr-5 ml-5" md>
+              <Select
+                options={Object.keys(device.effects).map(name => {
+                  return {
+                    value: name,
+                    label: name
                   }
-                </Form.Select>
-              </FloatingLabel>
+                })}
+                value={effects.map((name) => ({
+                  label: name,
+                  value: name
+                }))}
+                placeholder="Select Effects"
+                onChange={(selectedTriggers) => {
+                  setFormValues((formValues) => {
+                    return {
+                      ...formValues,
+                      effects: selectedTriggers.map(({ value }) => value)
+                    }
+                  });
+                }}
+                isMulti
+                />
             </Col>
           </Row>
           <Row>
@@ -151,7 +160,7 @@ function TriggersAddForm() {
                   addTrigger({
                     device,
                     condition,
-                    effect
+                    effects
                   });
                 }}
                 variant="primary">
