@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   Col,
   Container,
@@ -24,31 +25,66 @@ function DeviceAddForm() {
 
   const [ formValues, setValues ] = useState(initialState);
 
+  const [ validated, setValidated ] = useState(false);
+  const [ displayDuplicateError, setDisplayDuplicateError ] = useState(false);
+
   const {
     devices,
     setDevices,
     midiOutputs
   } = useContext(MidiDeviceContext);
 
+  const resetForm = () => {
+    setValidated(false);
+    setValues(initialState);
+  }
+
   const addDevice = (device) => {
-    if (devices.some((d) => d.key === device.key)) {
-      // TODO - some validation error msg because it's already been added
+    if (devices.some((d) => d.alias === device.alias)) {
+      return false;
     } else {
       setDevices([
         ...devices,
         attachBuiltinEffectsToDevice(device)
       ]);
+      return true;
     }
   };
 
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    const form = event.currentTarget;
+    
+    if (form.checkValidity()) {
+      if(addDevice({
+        key: [formValues.midiDevice, '-', formValues.midiChannel].join(''),
+        id: [formValues.midiDevice, '-', formValues.midiChannel].join(''),
+        alias: formValues.alias,
+        channel: formValues.midiChannel,
+        type: formValues.type,                    
+        output: midiOutputs.find((output) => output.id === formValues.midiDevice)
+      })) {
+        resetForm();
+        setDisplayDuplicateError(false);
+      } else {
+        setDisplayDuplicateError(true);
+      }
+
+    } else {
+      setValidated(true);
+    }
+  };
   return (
     <Container>
       <Row>
-        <Form>
+        <Form  noValidate validated={validated} onSubmit={handleSubmit}>
           <Row>
             <Form.Group className="mb-3" controlId="formDeviceAlias">
               <Form.Label>Device Name</Form.Label>
               <Form.Control
+                required
                 value={formValues.alias}
                 onChange={(e) => {
                   setValues({
@@ -57,6 +93,9 @@ function DeviceAddForm() {
                   });
                 }}
                 type="text" />
+                <Form.Control.Feedback type="invalid">
+                  Please choose a name for your device
+                </Form.Control.Feedback>
               <Form.Text className="text-muted">
                 Enter a name for the MIDI device you want to control
               </Form.Text>
@@ -66,6 +105,7 @@ function DeviceAddForm() {
             <Col md>
               <FloatingLabel controlId="formDeviceType" label="Device Type">
                 <Form.Select
+                  required
                   value={formValues.type}
                   onChange={(e) => {
                     setValues({
@@ -83,7 +123,6 @@ function DeviceAddForm() {
                         >
                           {deviceName}
                         </option>
-                        
                     })
                   }
                 </Form.Select>
@@ -92,6 +131,7 @@ function DeviceAddForm() {
             <Col md>
               <FloatingLabel controlId="formMidiDevice" label="MIDI Device">
                 <Form.Select
+                  required
                   value={formValues.midiDevice}
                   onChange={(e) => {
                     setValues({
@@ -112,6 +152,7 @@ function DeviceAddForm() {
             <Col md>
               <FloatingLabel controlId="formChannel" label="MIDI Channel">
                 <Form.Select
+                  required
                   value={formValues.midiChannel}
                   onChange={(e) => {
                     setValues({
@@ -132,17 +173,16 @@ function DeviceAddForm() {
           </Row>
           <Row>
             <Col>
+              { 
+                displayDuplicateError ?
+                <Alert variant={'info'}>
+                  Device name must be unique! Choose another and try again
+                </Alert> : null
+              }
+            </Col>
+            <Col>
               <Button
-                onClick={() => {
-                  addDevice({
-                    key: [formValues.midiDevice, '-', formValues.midiChannel].join(''),
-                    id: [formValues.midiDevice, '-', formValues.midiChannel].join(''),
-                    alias: formValues.alias,
-                    channel: formValues.midiChannel,
-                    type: formValues.type,                    
-                    output: midiOutputs.find((output) => output.id === formValues.midiDevice)
-                  });
-                }}
+                type="submit"
                 variant="primary">
                 Add Device
               </Button>
