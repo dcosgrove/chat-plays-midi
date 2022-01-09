@@ -1,23 +1,23 @@
 {
   "files": {
     "main.css": "/chat-plays-midi/static/css/main.c6d0217b.chunk.css",
-    "main.js": "/chat-plays-midi/static/js/main.1f87b929.chunk.js",
-    "main.js.map": "/chat-plays-midi/static/js/main.1f87b929.chunk.js.map",
+    "main.js": "/chat-plays-midi/static/js/main.2ac466e1.chunk.js",
+    "main.js.map": "/chat-plays-midi/static/js/main.2ac466e1.chunk.js.map",
     "runtime-main.js": "/chat-plays-midi/static/js/runtime-main.943faff6.js",
     "runtime-main.js.map": "/chat-plays-midi/static/js/runtime-main.943faff6.js.map",
     "static/css/2.0a9ec390.chunk.css": "/chat-plays-midi/static/css/2.0a9ec390.chunk.css",
-    "static/js/2.81b01c0c.chunk.js": "/chat-plays-midi/static/js/2.81b01c0c.chunk.js",
-    "static/js/2.81b01c0c.chunk.js.map": "/chat-plays-midi/static/js/2.81b01c0c.chunk.js.map",
+    "static/js/2.2dbdd070.chunk.js": "/chat-plays-midi/static/js/2.2dbdd070.chunk.js",
+    "static/js/2.2dbdd070.chunk.js.map": "/chat-plays-midi/static/js/2.2dbdd070.chunk.js.map",
     "index.html": "/chat-plays-midi/index.html",
     "static/css/2.0a9ec390.chunk.css.map": "/chat-plays-midi/static/css/2.0a9ec390.chunk.css.map",
     "static/css/main.c6d0217b.chunk.css.map": "/chat-plays-midi/static/css/main.c6d0217b.chunk.css.map",
-    "static/js/2.81b01c0c.chunk.js.LICENSE.txt": "/chat-plays-midi/static/js/2.81b01c0c.chunk.js.LICENSE.txt"
+    "static/js/2.2dbdd070.chunk.js.LICENSE.txt": "/chat-plays-midi/static/js/2.2dbdd070.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.943faff6.js",
     "static/css/2.0a9ec390.chunk.css",
-    "static/js/2.81b01c0c.chunk.js",
+    "static/js/2.2dbdd070.chunk.js",
     "static/css/main.c6d0217b.chunk.css",
-    "static/js/main.1f87b929.chunk.js"
+    "static/js/main.2ac466e1.chunk.js"
   ]
 }
