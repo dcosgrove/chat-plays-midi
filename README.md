@@ -1,6 +1,6 @@
 # ChatPlaysMIDI
 
-[b]Live at https://www.dcosgrove.com/chat-plays-midi/[/b]
+Live at https://www.dcosgrove.com/chat-plays-midi/
 
 ## Usage
 
