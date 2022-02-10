@@ -4,8 +4,7 @@ import {
 import {
   Container,
   FloatingLabel,
-  Form,
-  ListGroup
+  Form
 } from 'react-bootstrap';
 
 import { TwitchEventsContext } from './context/TwitchEvents';

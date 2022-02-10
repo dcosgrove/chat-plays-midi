@@ -79,7 +79,7 @@ function DeviceAddForm() {
   return (
     <Container>
       <Row>
-        <Form  noValidate validated={validated} onSubmit={handleSubmit}>
+        <Form noValidate validated={validated} onSubmit={handleSubmit}>
           <Row>
             <Form.Group className="mb-3" controlId="formDeviceAlias">
               <Form.Label>Device Name</Form.Label>

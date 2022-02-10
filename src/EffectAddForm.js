@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   Col,
   Container,
@@ -28,7 +29,6 @@ function GenericMidiEffectsRow({
   const {
     effectType = '',
     midiCc = '',
-    // midiCcValue = '',
     midiPc = ''
   } = effectParams;
 
@@ -37,6 +37,7 @@ function GenericMidiEffectsRow({
     <Col md>
       <FloatingLabel controlId="formMidiEffectType" label="Effect Type">
         <Form.Select
+          required
           value={effectType}
           onChange={(e) => {
             // if we are changing to a new type, clear existing params
@@ -58,6 +59,7 @@ function GenericMidiEffectsRow({
         <Col xs>
           <FloatingLabel controlId="floatingCcNumber" label="CC #">
             <Form.Control
+              required
               type="text"
               value={midiCc}
               onChange={(e) => {
@@ -76,6 +78,7 @@ function GenericMidiEffectsRow({
       <Col xs>
         <FloatingLabel controlId="floatingPcNumber" label="PC #">
           <Form.Control
+            required
             type="text"
             value={midiPc}
             onChange={(e) => {
@@ -116,6 +119,7 @@ function QuadCortexEffectsRow({
     <Col md>
       <FloatingLabel controlId="formQCEffectType" label="Effect Type">
         <Form.Select
+          required
           value={effectType}
           onChange={(e) => {
             // if we are changing to a new type, clear existing params
@@ -140,6 +144,7 @@ function QuadCortexEffectsRow({
         <Col xs>
           <FloatingLabel controlId="floatingSetlistNumber" label="Setlist #">
             <Form.Control
+              required
               type="text"
               value={setlistNumber}
               onChange={(e) => {
@@ -155,6 +160,7 @@ function QuadCortexEffectsRow({
         <Col xs>
           <FloatingLabel controlId="floatingPresetNumber" label="Preset #">
             <Form.Control
+              required
               type="text"
               value={presetNumber}
               onChange={(e) => {
@@ -172,6 +178,7 @@ function QuadCortexEffectsRow({
         <Col xs>
           <FloatingLabel controlId="floatingSceneLetter" label="Scene">
             <Form.Select
+              required
               value={scene}
               onChange={(e) => {
                 setEffectParams({
@@ -203,6 +210,7 @@ function QuadCortexEffectsRow({
 function EffectAddForm() {
   const initialState = {
     device: {
+      id: '',
       effects: []
     },
     effectName: '',
@@ -212,16 +220,29 @@ function EffectAddForm() {
 
   const [ { device, effectName, effectParams = {} }, setFormValues ] = useState(initialState);
 
+  const [ validated, setValidated ] = useState(false);
+  const [ displayDuplicateError, setDisplayDuplicateError ] = useState(false);
+
+  const resetForm = () => {
+    setValidated(false);
+    setDisplayDuplicateError(false);
+    setFormValues(initialState);
+  }  
+
   const {
     devices,
     setDevices
   } = useContext(MidiDeviceContext);
 
   const addEffect = () => {
-    // make a QC style program change
-
     // replace device with updated preset list
     const otherDevices = devices.filter((d) => d.id !== device.id);
+
+    // effect name conflict - error!
+    if(device.effects[effectName]) {
+      setDisplayDuplicateError(true);
+      return;
+    }
 
     const updatedEffects = device.effects;
     if(device.type === 'quad-cortex') {
@@ -243,17 +264,33 @@ function EffectAddForm() {
         effects: updatedEffects
       }
     ]);
+
+    resetForm();
   };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    const form = event.currentTarget;
+    
+    if (form.checkValidity()) {
+      addEffect();
+    } else {
+      setValidated(true);
+    }
+  }
 
   return (
     <Container>
       <Row>
-        <Form>
+        <Form noValidate validated={validated} onSubmit={handleSubmit}>
           <Row className="mb-3">
             <Col xs={6}>
               <FloatingLabel controlId="floatingEffectName" label="Effect Name">
                 <Form.Control
                   type="text"
+                  required
                   value={effectName}
                   onChange={(e) => {
                     setFormValues((formValues) => {
@@ -270,6 +307,7 @@ function EffectAddForm() {
             <Col md>
               <FloatingLabel controlId="formDevice" label="Device">
                 <Form.Select
+                  required
                   value={device.id}
                   onChange={(e) => {
                     setFormValues((formValues) => {
@@ -317,14 +355,16 @@ function EffectAddForm() {
           }
           <Row>
             <Col>
+              { 
+                displayDuplicateError ?
+                <Alert variant={'info'}>
+                  Unable to add effect: name must be unique per device!
+                </Alert> : null
+              }
+            </Col>
+            <Col>
               <Button
-                onClick={() => {
-                  addEffect({
-                    device,
-                    effectName,
-                    effectParams
-                  });
-                }}
+                type="submit"
                 variant="primary">
                 Add Effect
               </Button>
